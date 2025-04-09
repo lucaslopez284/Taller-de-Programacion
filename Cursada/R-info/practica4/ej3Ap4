@@ -1,0 +1,108 @@
+
+programa ejemplo
+procesos
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+areas
+  av1: AreaP (1,1,1,100)
+  av2: AreaP (2,1,2,100)
+  av3: AreaP (3,1,3,100)
+  extra: AreaP(10,1,10,1)
+robots
+  robot coordinador
+  comenzar
+    Asignar
+  fin
+  robot robot1
+  variables
+    id: numero
+    ok: boolean
+  comenzar
+    RecibirMensaje(id, rc)
+    repetir 4
+      juntarPapeles
+      mover
+    juntarPapeles
+    EnviarMensaje(V, r2)
+    EnviarMensaje(V, r3)
+    RecibirMensaje(ok,*)
+    RecibirMensaje(ok,*)
+    repetir 19
+      repetir 5
+        mover  
+        juntarPapeles        
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      RecibirMensaje(ok,*)
+      RecibirMensaje(ok,*)
+  fin
+  robot robot2
+  variables
+    id: numero
+    ok: boolean
+  comenzar
+    RecibirMensaje(id, rc)
+    repetir 4
+      juntarPapeles
+      mover
+    juntarPapeles
+    EnviarMensaje(V, r1)
+    EnviarMensaje(V, r3)
+    RecibirMensaje(ok,*)
+    RecibirMensaje(ok,*)
+    repetir 19
+      repetir 5
+        mover  
+        juntarPapeles
+      EnviarMensaje(V,r1)
+      EnviarMensaje(V,r3)
+      RecibirMensaje(ok,*)
+      RecibirMensaje(ok,*)
+  fin
+  robot robot3
+  variables
+    id: numero
+    ok: boolean
+  comenzar
+    RecibirMensaje(id, rc)
+    repetir 4
+      juntarPapeles
+      mover
+    juntarPapeles
+    EnviarMensaje(V, r1)
+    EnviarMensaje(V, r2)
+    RecibirMensaje(ok,*)
+    RecibirMensaje(ok,*)
+    repetir 19
+      repetir 5
+        mover
+        juntarPapeles
+      EnviarMensaje(V,r1)
+      EnviarMensaje(V,r2)
+      RecibirMensaje(ok,*)
+      RecibirMensaje(ok,*)
+  fin
+variables
+  r1: robot1
+  r2: robot2
+  r3: robot3
+  rc: coordinador
+comenzar
+  AsignarArea(rc, extra)
+  AsignarArea(r1, av1)
+  AsignarArea(r2, av2)
+  AsignarArea(r3, av3)
+  Iniciar(rc, 10,1)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,1)
+  Iniciar(r3, 3,1)
+fin

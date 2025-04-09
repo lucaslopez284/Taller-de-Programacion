@@ -1,0 +1,138 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+  fin
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso limpiar
+  comenzar
+    juntarFlores
+    juntarPapeles
+  fin
+  proceso cuadradoInferior (E av: numero; E ca: numero)
+  comenzar
+    repetir 3
+      mover
+      limpiar
+    BloquearEsquina(av,ca + 1)
+    mover
+    limpiar
+    derecha
+    mover
+    LiberarEsquina(av,ca + 1)
+    repetir 3
+      mover
+      limpiar
+    derecha
+    repetir 2
+      repetir 4
+        mover
+        limpiar
+      derecha
+  fin
+  proceso cuadradoSuperior(E av: numero; E ca: numero)
+  comenzar
+    repetir 2
+      repetir 4
+        mover
+        limpiar
+      derecha
+    repetir 3
+      mover
+      limpiar
+    av:= PosAv
+    BloquearEsquina(av, ca - 1)
+    mover
+    limpiar
+    derecha
+    mover
+    LiberarEsquina(av, ca - 1)
+    repetir 3
+      mover
+      limpiar
+    derecha
+  fin
+areas
+  recorrido: AreaPC (5,7,33,15)
+  areaF: AreaP (1,1,1,1)
+  area1: AreaP (2,2,2,2)
+  area2: AreaP (3,3,3,3)
+robots
+  robot inferior
+  variables
+    ok: boolean
+    id, av, ca: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    Pos(9,7)
+    av:= PosAv
+    ca:= PosCa
+    repetir 2
+      cuadradoInferior(av,ca)
+      av:= av + 10
+      Pos(av,ca)
+      EnviarMensaje(id,rf)
+      RecibirMensaje(ok,rf)
+    cuadradoInferior(av,ca)
+    EnviarMensaje(id,rf)
+  fin
+  robot superior
+  variables
+    ok: boolean
+    id, av, ca: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    Pos(5,11)
+    av:= PosAv
+    ca:= PosCa
+    repetir 2
+      cuadradoSuperior(av,ca)
+      av:= av + 10
+      Pos(av,ca)
+      EnviarMensaje(id,rf)
+      RecibirMensaje(ok,rf)
+    cuadradoSuperior(av,ca)
+    EnviarMensaje(id,rf)
+  fin
+  robot fiscal
+  variables
+    ok: boolean
+    quien, gana: numero
+  comenzar
+    Asignar
+    repetir 3
+      gana:= 0
+      repetir 2
+        RecibirMensaje(quien,*)
+        si (gana = 0)
+          gana:= quien
+      Informar(' ganador de etapa ' , gana)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(V,r2)
+  fin
+variables
+  r1: inferior
+  r2: superior
+  rf: fiscal
+comenzar
+  AsignarArea(rf, areaF)
+  AsignarArea(r1, area1)
+  AsignarArea(r1, recorrido)
+  AsignarArea(r2, area2)
+  AsignarArea(r2, recorrido)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 2,2)
+  Iniciar(r2, 3,3)
+fin

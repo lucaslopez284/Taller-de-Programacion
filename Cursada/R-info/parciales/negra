@@ -1,0 +1,39 @@
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+areas
+  rectangulo: AreaC (10,19,30,21)
+robots
+  robot robot1
+  variables
+    f, av, ca, id: numero
+  comenzar
+    RecibirMensaje
+    f:= 0
+    ca:= PosCa
+    derecha
+    repetir 9
+      av: PosAv
+      juntarFlores(f)
+      si(f > 0)
+        BloquearEsquina
+        Pos(av + 1, ca)
+        repetir f
+          depositarFlor
+        Pos(av,ca)
+        LiberarEsquina(
+  fin
+variables
+  ra1: robot1
+  rac: robot2
+  ra2: robot3
+comenzar
+  AsignarArea(ra1, rectangulo)
+  Iniciar(ra1, 10,21)
+fin

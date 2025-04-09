@@ -1,0 +1,80 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+areas
+  es: AreaC (100,1,100,1)
+  a1: AreaP (10,1,10,1)
+  a2: AreaP (11,1,11,1)
+  a3: AreaP (12,1,12,1)
+  a4: AreaP (13,1,13,1)
+robots
+  robot cliente
+  variables 
+    id, p, av, ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    RecibirMensaje(id, rs)
+    repetir 4
+      EnviarMensaje(id, rs)
+      RecibirMensaje(p, rs)
+      repetir p
+        BloquearEsquina(100,1)
+        Pos(100,1)
+        tomarPapel
+        Pos(av,ca)
+        LiberarEsquina(100,1)
+        depositarPapel
+  fin
+  robot servidor
+  variables
+    p, id, cont, av, ca: numero
+    ok: boolean
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+    Asignar
+    cont:= 0
+    repetir 12
+      RecibirMensaje(id, *)
+      Random(p,1,5)
+      BloquearEsquina(100,1)
+      Pos(100,1)
+      repetir p
+        depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(100,1)
+      si (id = 1)
+        EnviarMensaje(p,r1)
+      sino
+        si (id = 2)
+          EnviarMensaje(p,r2)
+        sino
+          si (id = 3)
+            EnviarMensaje(p,r3)
+  fin
+variables
+  r1, r2, r3: cliente
+  rs: servidor
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(r2, a2)
+  AsignarArea(r3, a3)
+  AsignarArea(rs, a4)
+  AsignarArea(r1, es)
+  AsignarArea(r2, es)
+  AsignarArea(r3, es)
+  AsignarArea(rs, es)
+  Iniciar(r1, 10,1)
+  Iniciar(r2, 11,1)
+  Iniciar(r3, 12,1)
+  Iniciar(rs, 13,1)
+fin

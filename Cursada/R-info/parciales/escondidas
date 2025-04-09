@@ -1,0 +1,171 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso Habilitar
+  comenzar
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+  fin
+areas
+  cuadrante: AreaPC (10,10,13,13)
+  a1: AreaP (1,1,1,1)
+  a2: AreaP (2,2,2,2)
+  a3: AreaP (3,3,3,3)
+  a4: AreaP (4,4,4,4)
+robots
+  robot robot1
+  variables
+    av, ca avI, caI, id, cantV: numero
+    parar, encontre, stop: boolean
+  comenzar
+    RecibirMensaje(id,rf) 
+    RecibirMensaje(parar,rf)
+    avI:= PosAv
+    caI:= PosCa
+    encontre:= F
+    mientras(parar = F)
+      cantV:= 0
+      Random(av, 10,13)
+      Random(ca, 10,13)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      si (HayFlorEnLaEsquina)
+        tomarFlor
+        encontre:= V
+      Pos(avI,caI)
+      LiberarEsquina(av,ca)
+      si (encontre = V)
+        EnviarMensaje(id,rf)
+        cantV:= 1
+      EnviarMensaje(encontre,r2)
+      EnviarMensaje(encontre,r3)
+      repetir 2
+        RecibirMensaje(stop,*)
+        si (stop = V)
+          cantV:= cantV + 1
+      si (cantV = 1)
+        parar:= V      
+    EnviarMensaje(V,rf)
+  fin
+  robot robot2
+  variables
+    av, ca avI, caI, id, cantV: numero
+    parar, encontre, stop: boolean
+  comenzar
+    RecibirMensaje(id,rf) 
+    RecibirMensaje(parar,rf)
+    avI:= PosAv
+    caI:= PosCa
+    encontre:= F
+    mientras(parar = F)
+      cantV:= 0
+      Random(av, 10,13)
+      Random(ca, 10,13)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      si (HayFlorEnLaEsquina)
+        tomarFlor
+        encontre:= V
+      Pos(avI,caI)
+      LiberarEsquina(av,ca)
+      si (encontre = V)
+        EnviarMensaje(id,rf)
+        cantV:= 1
+      EnviarMensaje(encontre,r1)
+      EnviarMensaje(encontre,r3)
+      repetir 2
+        RecibirMensaje(stop,*)
+        si (stop = V)
+          cantV:= cantV + 1
+      si (cantV = 1)
+        parar:= V      
+    EnviarMensaje(V,rf)
+  fin
+  robot robot3
+  variables
+    av, ca avI, caI, id, cantV: numero
+    parar, encontre, stop: boolean
+  comenzar
+    RecibirMensaje(id,rf) 
+    RecibirMensaje(parar,rf)
+    avI:= PosAv
+    caI:= PosCa
+    encontre:= F
+    mientras(parar = F)
+      cantV:= 0
+      Random(av, 10,13)
+      Random(ca, 10,13)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      si (HayFlorEnLaEsquina)
+        tomarFlor
+        encontre:= V
+      Pos(avI,caI)
+      LiberarEsquina(av,ca)
+      si (encontre = V)
+        EnviarMensaje(id,rf)
+        cantV:= 1
+      EnviarMensaje(encontre,r1)
+      EnviarMensaje(encontre,r2)
+      repetir 2
+        RecibirMensaje(stop,*)
+        si (stop = V)
+          cantV:= cantV + 1
+      si (cantV = 1)
+        parar:= V      
+    EnviarMensaje(V,rf)
+  fin
+  robot fiscal
+  variables
+    av, ca avI, caI, ganador: numero
+    ok, quien: boolean
+  comenzar
+    tomarFlor
+    Asignar
+    avI:= PosAv
+    caI:= PosCa
+    Random(av, 10,13)
+    Random(ca, 10,13)
+    Pos(av,ca)
+    depositarFlor
+    Pos(avI,caI)
+    Habilitar
+    RecibirMensaje(quien, *)
+    si (quien = 1)
+      ganador:= 1
+    sino
+      si (quien = 2)
+        ganador := 2
+      sino
+        si (quien = 3)
+          ganador:= 3
+    repetir 3
+      RecibirMensaje(ok, *)
+    Informar(' el ganador es ', ganador)
+  fin
+variables
+  r1: robot1
+  r2: robot2
+  r3: robot3
+  rf: fiscal
+comenzar
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(r3, cuadrante)
+  AsignarArea(rf, cuadrante)
+  AsignarArea(r1, a1)
+  AsignarArea(r2, a2)
+  AsignarArea(r3, a3)
+  AsignarArea(rf, a4)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,2)
+  Iniciar(r3, 3,3)
+  Iniciar(rf, 4,4)
+fin

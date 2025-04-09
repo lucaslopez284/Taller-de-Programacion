@@ -1,0 +1,144 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso etapa1flo
+  variables
+    av,ca: numero
+  comenzar
+    repetir 5
+      Random(av,11,15)
+      Random(ca,11,15)
+      BloquearEsquina(18,13)
+      Pos(18,13)
+      tomarFlor
+      Pos(av,ca)
+      LiberarEsquina(18,13)
+      depositarFlor
+    Pos(2,2)  
+  fin
+  proceso etapa1pap
+  variables
+    av,ca: numero
+  comenzar
+    repetir 5
+      Random(av,21,25)
+      Random (ca,11,15)
+      BloquearEsquina (18,13)
+      Pos(18,13)
+      tomarPapel
+      Pos(av,ca)
+      LiberarEsquina(18,13)
+      depositarPapel
+    Pos(3,3)  
+  fin
+  proceso etapa2flo
+  variables
+    esta: boolean
+    av,ca: numero
+  comenzar
+    esta:= F
+    mientras (esta = F)
+      Random(av,21,25)
+      Random(ca,11,15)
+      Pos(av,ca)
+      si(HayPapelEnLaEsquina)
+        tomarPapel
+        BloquearEsquina(18,13)
+        Pos(18,13)
+        depositarPapel
+        Pos(2,2)
+        LiberarEsquina(18,13)
+        esta:= V
+      sino
+        Pos(2,2)
+  fin
+  proceso etapa2pap
+  variables
+    esta: boolean
+    av,ca: numero
+  comenzar
+    esta:= F
+    mientras (esta = F)
+      Random(av,11,15)
+      Random(ca,11,15)
+      Pos(av,ca)
+      si(HayFlorEnLaEsquina)
+        tomarFlor
+        BloquearEsquina(18,13)
+        Pos(18,13)
+        depositarFlor
+        Pos(3,3)
+        LiberarEsquina(18,13)
+        esta:= V
+      sino
+        Pos(3,3)
+  fin
+areas
+  fue: AreaPC (18,13,18,13)
+  fis: AreaP (1,1,1,1)
+  flo: AreaP (2,2,2,2)
+  pap: AreaP (3,3,3,3)
+  a: AreaPC (11,11,15,15)
+  b: AreaPC (21,11,25,15)
+robots
+  robot florero
+  variables
+    ok: boolean
+  comenzar
+    etapa1flo
+    EnviarMensaje(V,rf)
+    RecibirMensaje(ok,rf)
+    etapa2flo
+    EnviarMensaje(1,rf)
+  fin
+  robot papelero
+  variables
+    ok: boolean
+  comenzar
+    etapa1pap
+    EnviarMensaje(V,rf)
+    RecibirMensaje(ok,rf)
+    etapa2pap
+    EnviarMensaje(2,rf)
+  fin
+  robot fiscal
+  variables
+    id, ganador : numero
+    ok: boolean
+  comenzar
+    repetir 2
+      RecibirMensaje(ok,*)
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    ganador:= 0
+    repetir 2
+      RecibirMensaje(id,*)
+      si (ganador = 0)
+        ganador:= id
+    si (ganador = 1)
+      Informar('Gano el florero ' , ganador)
+    sino
+      Informar('Gano el papelero ' , florero) 
+  fin
+variables
+  r1: florero
+  r2: papelero
+  rf: fiscal
+comenzar
+  AsignarArea(rf, fis)
+  AsignarArea(r1, fue)
+  AsignarArea(r1, flo)
+  AsignarArea(r1, a)
+  AsignarArea(r1, b)
+  AsignarArea(r2, fue)
+  AsignarArea(r2, pap)
+  AsignarArea(r2, a)
+  AsignarArea(r2, b)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 2,2)
+  Iniciar(r2, 3,3)
+fin

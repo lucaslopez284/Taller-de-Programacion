@@ -1,0 +1,123 @@
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES f: numero; ES aux: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+      aux := aux + 1
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso Envio (E al: numero; E an: numero)
+  comenzar
+    EnviarMensaje(al,r1)
+    EnviarMensaje(al,r2)
+    EnviarMensaje(al,r3)
+    EnviarMensaje(an,r1)
+    EnviarMensaje(an,r2)
+    EnviarMensaje(an,r3)
+  fin
+  proceso tramo(E alto: numero; E ancho: numero; ES f: numero)
+  variables
+    av, ca aux: numero
+  comenzar
+    aux:= 0
+    juntarFlores(f, aux)
+    repetir alto
+      mover
+      juntarFlores(f, aux)
+    av:= PosAv
+    ca:= PosCa
+    repetir aux
+      BloquearEsquina(25,25)
+      Pos(25,25)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(25,25)
+    aux:= 0
+    derecha
+    repetir ancho
+      mover
+      juntarFlores(f, aux)
+    av:= PosAv
+    ca:= PosCa
+    repetir aux
+      BloquearEsquina(25,25)
+      Pos(25,25)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(25,25)
+    derecha
+  fin
+areas
+  a1: AreaP (1,1,6,11)
+  a2: AreaP (7,1,12,11)
+  a3: AreaP (13,1,18,11)
+  af: AreaP (24,24,24,24)
+  esq: AreaPC (25,25,25,25)
+robots
+  robot robot1
+  variables
+    ancho, alto, id, f: numero
+  comenzar
+    f:= 0
+    RecibirMensaje(id, rf)
+    RecibirMensaje(alto, rf)
+    RecibirMensaje(ancho, rf)
+    repetir 2
+      tramo(alto,ancho, f)
+    EnviarMensaje(id, rf)
+    EnviarMensaje(f, rf)
+  fin
+  robot fiscal
+  variables
+    ancho, alto, id, max, aux, rmax: numero
+  comenzar
+    Asignar
+    Random(alto,1,10)
+    Random(ancho,1,5)
+    Envio(alto,ancho)
+    max:= 0
+    repetir 3
+      RecibirMensaje (id, *)
+      si (id = 1)
+        RecibirMensaje(aux,r1)
+        si (aux > max)
+          max:= aux
+          rmax:= id
+      sino
+        si (id = 2)
+          RecibirMensaje(aux,r2)
+          si (aux > max)
+            max:= aux
+            rmax:= id
+        sino
+          si (id = 3)
+            RecibirMensaje(aux, r3)
+            si (aux > max)
+              max:= aux
+              rmax:= id
+    Informar( ' el que mas junto es ', rmax)
+  fin
+variables
+  r1,r2,r3: robot1
+  rf: fiscal
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(r2, a2)
+  AsignarArea(r3, a3)
+  AsignarArea(rf, af)
+  AsignarArea(r1, esq)
+  AsignarArea(r2, esq)
+  AsignarArea(r3, esq)
+  Iniciar(rf, 24,24)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 7,1)
+  Iniciar(r3, 13,1)
+fin

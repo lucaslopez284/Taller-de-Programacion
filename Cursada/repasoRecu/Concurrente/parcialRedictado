@@ -1,0 +1,97 @@
+
+programa ejemplo
+procesos
+  proceso asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso continuen
+  comenzar
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+  fin
+  proceso juntarFlores (ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso recorrerCuadrado(ES f: numero)
+  variables
+    ok: boolean
+  comenzar
+    repetir 4
+      repetir 5
+        mover 
+        juntarFlores (f)
+      derecha
+      EnviarMensaje(V,rc)
+      RecibirMensaje(ok,rc)
+  fin
+  proceso maximo(ES idmax: numero; ES max: numero; E id: numero ; E cant: numero)
+  comenzar
+    si (cant > max)
+      max:= cant
+      idmax:= id
+  fin 
+areas
+  area1: AreaP (1,1,6,6)
+  area2: AreaP (7,1,12,6)
+  area3: AreaP (13,1,18,6)
+  esq: AreaP (20,1,20,1)
+robots
+  robot trabajador
+  variables 
+    f,id: numero
+  comenzar
+    RecibirMensaje(id,rc)
+    f:= 0
+    recorrerCuadrado(f)
+    EnviarMensaje(id,rc)
+    EnviarMensaje(f,rc)
+  fin
+  robot coordinador
+  variables
+    ok: boolean
+    id: numero
+    max: numero
+    idmax: numero
+    aux: numero
+  comenzar
+    asignar
+    repetir 4
+      repetir 3
+        RecibirMensaje(ok,*)
+      continuen
+    max:= 0
+    idmax:= 0
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(aux,r1)
+        maximo(idmax,max,id,aux)
+      sino
+        si (id = 2)
+          RecibirMensaje(aux,r2)
+          maximo(idmax,max,id,aux)
+        sino
+          RecibirMensaje(aux,r3)
+          maximo(idmax,max,id,aux)
+    Informar('El que mas junto fue ' , idmax)
+  fin
+variables
+  r1,r2,r3: trabajador
+  rc: coordinador
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area3)
+  AsignarArea(rc, esq)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 7,1)
+  Iniciar(r3, 13,1)
+  Iniciar(rc, 20,1)
+fin

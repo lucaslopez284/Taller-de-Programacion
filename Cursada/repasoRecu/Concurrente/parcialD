@@ -1,0 +1,178 @@
+
+programa ejemplo
+procesos
+  proceso depPapel(ES e: numero)
+  comenzar
+    si ~(HayPapelEnLaEsquina)
+      depositarPapel
+      e:= e + 1
+  fin
+  proceso depFlor (ES e: numero)
+  comenzar
+    si ~(HayFlorEnLaEsquina)
+      depositarFlor
+      e:= e + 1
+  fin
+  proceso asignar 
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso envioAvenida(E av: numero)
+  comenzar
+    EnviarMensaje(av,r1)
+    EnviarMensaje(av,r2)
+    EnviarMensaje(av,r3)
+  fin
+  proceso posibleChoque( E numAv: numero; E ca: numero; ES e: numero)
+  comenzar
+    BloquearEsquina(numAv,ca)
+    mover
+    depFlor(e)
+    mover
+    LiberarEsquina(numAv,ca)
+  fin
+  proceso posibleChoqueBis( E numAv: numero; E ca: numero; ES e: numero)
+  comenzar
+    BloquearEsquina(numAv,ca)
+    mover
+    depPapel(e)
+    mover
+    LiberarEsquina(numAv,ca)
+  fin
+  proceso recorrerCalle(E numAv: numero; ES e: numero)
+  variables
+    cant, av,ca: numero
+  comenzar
+    ca:= PosCa
+    derecha
+    depPapel(e)
+    cant:= numAv - 2
+    repetir cant
+      mover
+      depPapel(e)
+    av:= PosAv
+    posibleChoqueBis(numAv,ca,e)
+    cant:= 100- numAv - 1
+    depPapel(e)
+    repetir cant
+      mover
+      depPapel(e)
+  fin
+  proceso recorrerAvenida(E numAv: numero;ES e: numero)
+  variables
+    ca: numero
+  comenzar
+    Pos(numAv, 1)
+    depFlor(e)
+    repetir 6
+      mover
+      depFlor(e)
+    ca:= PosCa + 1
+    posibleChoque(numAv,ca,e)
+    depFlor(e)
+    repetir 5
+      mover
+      depFlor(e)
+    ca:= PosCa + 1
+    posibleChoque(numAv,ca,e)
+    depFlor(e)
+    repetir 84
+      mover
+      depFlor(e)
+  fin
+  proceso envioMensajes(E pri: numero)
+  comenzar
+    si (pri = 1)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+    sino
+      si (pri = 2)
+        EnviarMensaje(F,r1)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(F,r3)
+      sino
+        si (pri = 3)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(V,r3)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot papelero
+  variables
+    av, id,avini,caini,e: numero
+    ok: boolean
+  comenzar
+    avini:= PosAv
+    caini:= PosCa
+    e:= 0
+    RecibirMensaje(id,rf)
+    RecibirMensaje(av,rf)
+    recorrerCalle(av,e)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(e,rf)
+    RecibirMensaje(ok,rf)
+    si (ok = V)
+      Pos(avini,caini) 
+  fin
+  robot florero
+  variables
+    av, id,avini,caini,e: numero
+    ok: boolean
+  comenzar
+    avini:= PosAv
+    caini:= PosCa
+    e:= 0
+    RecibirMensaje(id,rf)
+    RecibirMensaje(av,rf)
+    recorrerAvenida(av,e)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(e,rf)
+    RecibirMensaje(ok,rf)
+    si (ok = V)
+      Pos(avini,caini)
+  fin
+  robot fiscal
+  variables
+    id,av,pri,cant,aux: numero
+  comenzar
+    asignar
+    Random (av,2,35)
+    envioAvenida(av)
+    pri:= 0
+    cant:= 0
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(aux,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(aux,r2)
+        sino
+          si (id = 3)
+            RecibirMensaje(aux,r3)
+      si (pri = 0)
+        pri:= id
+        cant:= aux
+    envioMensajes(pri)
+    Informar('El primero fue ' , pri)
+    Informar('Que deposito ' , cant)
+  fin 
+variables
+  r1,r2: papelero
+  r3: florero
+  rf: fiscal
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(rf, ciudad)
+  Iniciar(r1, 1,8)
+  Iniciar(r2, 1,15)
+  Iniciar(r3, 1,2)
+  Iniciar(rf, 1,1)
+fin

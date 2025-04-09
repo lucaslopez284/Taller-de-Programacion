@@ -1,0 +1,105 @@
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso Finalizar
+  comenzar
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+  fin
+areas
+  cuadrante: AreaPC (40,40,60,60)
+  esq1: AreaP (1,1,1,1)
+  esq2: AreaP (2,1,2,1)
+  esq3: AreaP (3,1,3,1)
+  esq4: AreaP (4,1,4,1)
+  esq: AreaPC (10,10,10,10)
+robots
+  robot florero
+  variables
+    id, f, x,y, av, ca: numero
+    trabajar: boolean
+  comenzar
+    RecibirMensaje(id,rf)
+    av:= PosAv
+    ca:= PosCa
+    f:= 0
+    RecibirMensaje(trabajar, rf)
+    mientras(trabajar)
+      RecibirMensaje(x,rf)
+      RecibirMensaje(y,rf)
+      BloquearEsquina(x,y)
+      Pos(x,y)
+      juntarFlores(f)
+      Pos(av,ca)
+      LiberarEsquina(x,y)
+      RecibirMensaje(trabajar,rf)
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    repetir f
+      depositarFlor
+    Pos(av,ca)
+    LiberarEsquina(10,10)
+    EnviarMensaje(f,rf)
+  fin
+  robot fiscal
+  variables
+    av,ca,quien, flo, aux: numero
+  comenzar
+    Asignar
+    repetir 8
+      Random(quien,1,3)
+      Random(av,40,60)
+      Random(ca,40,60)
+      si (quien = 1)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(av,r1)
+        EnviarMensaje(ca,r1)
+      sino
+        si (quien = 2)
+          EnviarMensaje(V,r2)
+          EnviarMensaje(av,r2)
+          EnviarMensaje(ca,r2)
+        sino
+          si (quien = 3)
+            EnviarMensaje(V,r3)
+            EnviarMensaje(av,r3)
+            EnviarMensaje(ca,r3)
+    Finalizar
+    flo:= 0
+    repetir 3
+      RecibirMensaje(aux,*)
+      flo:= flo + aux
+    Informar('la cantidad juntada fue ', flo)
+  fin
+variables
+  r1,r2,r3: florero
+  rf: fiscal
+comenzar
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(r3, cuadrante)
+  AsignarArea(r1, esq)
+  AsignarArea(r2, esq)
+  AsignarArea(r3, esq)
+  AsignarArea(r1, esq1)
+  AsignarArea(r2, esq2)
+  AsignarArea(r3, esq3)
+  AsignarArea(rf, esq4)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,1)
+  Iniciar(r3, 3,1)
+  Iniciar(rf, 4,1)
+fin

@@ -1,0 +1,98 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un cÃ³digo de ejemplo que implementa un
+proceso que recibe un nÃºmero de avenida como parÃ¡metro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles(ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina) & (p < 5)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso tarea (ES p: numero; E x: numero; E y: numero)
+  comenzar
+    juntarPapeles(p)
+    si (p = 5)
+      BloquearEsquina(50,50)
+      Pos (50,50)
+      repetir 5
+        depositarPapel
+      Pos(x,y)
+      LiberarEsquina(50,50)
+      p:= 0     
+  fin
+areas
+  av5: AreaP (5,1,5,100)
+  av10: AreaP (10,1,10,100)
+  esq: AreaP(50,50,50,50)
+  esq11: AreaP(11,1,11,1)
+  esq12: AreaP(12,1,12,1)
+robots
+  robot productor
+  variables 
+    av, ca, p: numero
+    termine: boolean
+  comenzar
+    p:= 0
+    termine:= F
+    av:= PosAv
+    mientras (termine = F)
+      ca:= PosCa
+      tarea(p, av, ca)
+      si (HayPapelEnLaEsquina)
+        tarea(p, av, ca)
+      si( PosCa = 100)
+        termine := V
+      sino
+        mover
+  fin
+  robot consumidor
+  variables
+    p, aux, i, av, ca: numero
+    traje: boolean
+  comenzar
+    i:= 0
+    traje:= F
+    av:= PosAv
+    ca:= PosCa
+    p:= 0
+    mientras (i < 8) & (traje = F)
+      Random(aux,2,5)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      mientras(HayPapelEnLaEsquina) & (p < aux)
+        tomarPapel
+        p:= p + 1
+      si (aux <> p)
+        mientras(HayPapelEnLaBolsa)
+          depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      si (aux = p)
+        traje:= V
+        mientras(HayPapelEnLaBolsa)
+          depositarPapel
+      i:= i + 1
+      p:= 0
+  fin   
+variables
+  rp1: productor
+  rp2: productor
+  rc1: consumidor
+  rc2: consumidor
+comenzar
+  AsignarArea(rp1, av5)
+  AsignarArea(rp1, esq)
+  AsignarArea(rp2, av10)
+  AsignarArea(rp2, esq)
+  AsignarArea(rc1, esq11)
+  AsignarArea(rc1, esq)
+  AsignarArea(rc2, esq12)
+  AsignarArea(rc2, esq)
+  Iniciar(rp1, 5,1)
+  Iniciar(rp2, 10,1)
+  Iniciar(rc1, 11,1)
+  Iniciar(rc2, 12,1) 
+fin

@@ -1,0 +1,126 @@
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1, r1)
+    EnviarMensaje(2, r2)
+    EnviarMensaje(3, a1)
+    EnviarMensaje(4, a2)
+  fin
+  proceso juntarFlores( ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1 
+  fin
+  proceso juntarPapeles( ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1 
+  fin
+  proceso recorrerAvenida(ES f: numero)
+  variables
+    av, ca: numero
+  comenzar
+    av:= PosAv
+    repetir 96
+      juntarFlores(f)
+      mover
+    ca:= PosCa
+    juntarFlores(f)
+    BloquearEsquina(av,ca + 1)
+    mover
+    juntarFlores(f)
+    BloquearEsquina(av, ca + 2)
+    mover
+    LiberarEsquina(av, ca + 1)
+    juntarFlores(f)
+    mover
+    LiberarEsquina(av, ca + 2)
+    juntarFlores(f)
+  fin
+  proceso recorrerCalle (ES p: numero)
+  variables
+    av, ca: numero
+  comenzar
+    ca:= PosCa
+    av:= PosAv
+    juntarPapeles(p)
+    BloquearEsquina(av + 1, ca)
+    mover
+    juntarPapeles(p)
+    BloquearEsquina(av + 2, ca)
+    mover
+    LiberarEsquina(av + 1, ca)
+    juntarPapeles(p)
+    mover
+    LiberarEsquina(av + 2, ca)
+    repetir 96
+      juntarPapeles(p)
+      mover
+    juntarPapeles(p)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robot1
+  variables
+    f, id: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    f:= 0
+    recorrerAvenida(f)
+    EnviarMensaje(id, rf)
+    EnviarMensaje(f, rf)
+  fin
+  robot robot2
+  variables
+    p, id: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    p:= 0
+    derecha
+    recorrerCalle(p)
+    EnviarMensaje(id, rf)
+    EnviarMensaje(p, rf)
+  fin
+  robot fiscal
+  variables
+    flo, pap, aux, quien: numero
+  comenzar
+    Asignar
+    flo:= 0
+    pap:= 0
+    repetir 4
+      RecibirMensaje(quien, *)
+      RecibirMensaje(aux, *)
+      si (quien < 3)
+        flo:= flo + aux
+      sino 
+        pap:= pap + aux
+    Informar('flores juntadas ' , flo)
+    Informar('Papeles juntados ' , pap)
+    si (pap > flo)
+      Informar('gano equipo A que junto ' , pap)
+    sino 
+      Informar('gano equipo R que junto ' , flo)
+  fin
+variables
+  r1: robot1
+  r2: robot1 
+  a1: robot2
+  a2: robot2
+  rf: fiscal
+comenzar
+  AsignarArea(r1, ciudad) 
+  AsignarArea(r2, ciudad)
+  AsignarArea(a1, ciudad)
+  AsignarArea(a2, ciudad)
+  AsignarArea(rf, ciudad)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 3,1)
+  Iniciar(a1, 1,98)
+  Iniciar(a2, 1,99)
+fin

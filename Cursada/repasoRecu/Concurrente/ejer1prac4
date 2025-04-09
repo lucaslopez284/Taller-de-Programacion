@@ -1,0 +1,109 @@
+
+programa ejemplo
+procesos
+  proceso asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso juntarFlores(E f: numero; E ca: numero)
+  comenzar
+    mover
+    repetir f
+      tomarFlor
+    ca:= PosCa - 1
+    Pos(PosAv,ca)
+  fin
+  proceso depositar (E f: numero; E av: numero; E ca: numero)
+  comenzar
+    Pos(av,ca)
+    repetir f
+      depositarFlor
+    Pos(100,100)
+  fin
+areas
+  esqFis: AreaP (100,100,100,100)
+  av1: AreaPC (1,1,1,100)
+  av2: AreaPC (2,1,2,100)
+  av3: AreaPC (3,1,3,100)
+robots
+  robot cliente
+  variables
+    f,av,ca,id: numero
+    ok: boolean
+  comenzar
+    av:= PosAv
+    RecibirMensaje(id,rs)
+    mientras(PosCa < 100)
+      ca:= PosCa
+      Random(f,1,4)
+      EnviarMensaje(id,rs)
+      EnviarMensaje(f,rs)
+      EnviarMensaje(av,rs)
+      EnviarMensaje(ca+ 1 ,rs)
+      RecibirMensaje(ok,rs)
+      juntarFlores(f,ca)
+      mientras (PosCa < 100)& (f> 0)
+        depositarFlor
+        f:= f - 1
+        mover
+      si (PosCa = 100) & (f>0)
+        depositarFlor
+    EnviarMensaje(id,rs)
+    EnviarMensaje(0,rs)
+  fin
+  robot servidor
+  variables
+    av,ca,f,id, terminaron: numero
+  comenzar
+    asignar
+    terminaron:= 0
+    mientras(terminaron < 3)
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(f,r1)
+        si (f > 0)
+          RecibirMensaje(av,r1)
+          RecibirMensaje(ca,r1)
+          depositar (f,av,ca)
+          EnviarMensaje(V,r1)
+        sino
+          terminaron:= terminaron + 1
+      sino
+        si (id = 2)
+          RecibirMensaje(f,r2)
+          si (f > 0)
+            RecibirMensaje(av,r2)
+            RecibirMensaje(ca,r2)
+            depositar(f,av,ca)
+            EnviarMensaje(V,r2)
+          sino
+            terminaron:= terminaron + 1
+        sino
+          si (id = 3)
+            RecibirMensaje(f,r3)
+            si (f > 0)
+              RecibirMensaje(av,r3)
+              RecibirMensaje(ca,r3)
+              depositar(f,av,ca)
+              EnviarMensaje(V,r3)
+            sino
+              terminaron:= terminaron + 1
+  fin
+variables
+  r1,r2,r3: cliente
+  rs: servidor
+comenzar
+  AsignarArea(r1, av1)
+  AsignarArea(r2, av2)
+  AsignarArea(r3, av3)
+  AsignarArea(rs, esqFis)
+  AsignarArea(rs, av1)
+  AsignarArea(rs, av2)
+  AsignarArea(rs, av3)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,1)
+  Iniciar(r3, 3,1)
+  Iniciar(rs, 100,100)
+fin

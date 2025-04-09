@@ -1,0 +1,59 @@
+
+programa ejemplo
+procesos
+  proceso continuen
+  comenzar
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+  fin
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso recorrer(E n: numero)
+  comenzar
+    repetir n
+      juntarPapeles
+      mover
+  fin
+areas
+  av1: AreaP (1,1,1,100)
+  av2: AreaP (2,1,2,100)
+  av3: AreaP (3,1,3,100)
+  esq: AreaP (4,1,4,1)
+robots
+  robot papelero
+  variables
+    ok: boolean
+  comenzar
+    repetir 19
+      recorrer (5)
+      EnviarMensaje(V,rf)
+      RecibirMensaje(ok,rf)
+    recorrer(4) 
+    juntarPapeles 
+  fin
+  robot fiscal
+  variables
+    ok: boolean
+  comenzar
+    repetir 19
+      repetir 3
+        RecibirMensaje(ok,*)
+      continuen
+  fin
+variables
+  r1,r2,r3: papelero
+  rf: fiscal
+comenzar
+  AsignarArea(r1, av1)
+  AsignarArea(r2, av2)
+  AsignarArea(r3, av3)
+  AsignarArea(rf, esq)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,1)
+  Iniciar(r3, 3,1)
+  Iniciar(rf, 4,1)
+fin

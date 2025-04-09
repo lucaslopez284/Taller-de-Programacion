@@ -1,0 +1,101 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso Posicionar (E n: numero)
+  variables
+    c: numero
+  comenzar
+    c:= PosCa 
+    c:= c + n
+    Pos(PosAv, c)
+  fin
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      f:= f + 1
+      tomarFlor
+  fin
+  proceso cuadrado(E n: numero; ES f: numero)
+  comenzar
+    repetir 4
+      repetir n
+        mover
+        juntarFlores(f)
+      derecha
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot cliente
+  variables
+    id, f, long, av, ca: numero
+  comenzar
+    f:= 0
+    RecibirMensaje(id,rs)
+    repetir 2
+      EnviarMensaje(id,rs)
+      RecibirMensaje(long,rs)
+      cuadrado(long,f)
+      long:= long + 1
+      Posicionar (long)
+    EnviarMensaje(id,rs)
+    RecibirMensaje(long,rs)
+    cuadrado(long,f)
+    av:= PosAv
+    ca:= PosCa
+    repetir f
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+    EnviarMensaje(f, rs)
+  fin
+  robot servidor
+  variables
+    flo, long, quien, av, ca, aux: numero
+    listo: boolean
+  comenzar
+    Asignar
+    repetir 9
+      Random(long,1,5)
+      RecibirMensaje(quien,*)
+      si (quien = 1)
+        EnviarMensaje(long, r1)
+      sino
+        si (quien = 2)
+          EnviarMensaje(long, r2)
+        sino
+          si (quien = 3)
+            EnviarMensaje(long,r3)
+    flo:= 0
+    repetir 3
+      RecibirMensaje(aux,*)
+      flo:= flo + aux
+    av:= PosAv
+    ca:= PosCa
+    Pos(50,50)
+    repetir flo
+      tomarFlor
+    Pos(av,ca)
+    Informar('la cantidad juntada fue ' , flo)
+  fin
+variables
+  r1,r2,r3: cliente
+  rs: servidor
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(rs, ciudad)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 8,1)
+  Iniciar(r3, 15,1)
+  Iniciar(rs, 22,1)
+fin

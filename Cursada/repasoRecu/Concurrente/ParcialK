@@ -1,0 +1,123 @@
+
+programa ejemplo
+procesos
+  proceso asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso cuadrado(ES f: numero; E n: numero)
+  comenzar
+    repetir 4
+      repetir n
+        mover
+        juntarFlores(f)
+      derecha 
+  fin
+  proceso depositar(E f: numero; E av: numero; E ca: numero)
+  comenzar
+    repetir f
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+  fin
+areas
+  esq: AreaC (50,50,50,50)
+  esqServidor: AreaP (22,1,22,1)
+  a1: AreaP (1,1,6,16)
+  a2: AreaP (8,1,14,16)
+  a3: AreaP (15,1,21,16)
+robots
+  robot cliente
+  variables
+    id,f,n,av,ca: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    f:= 0
+    av:= PosAv
+    repetir 2
+      EnviarMensaje(id,rf)
+      EnviarMensaje(F,rf)
+      RecibirMensaje(n,rf)
+      cuadrado(f,n)
+      ca:= PosCa + n
+      Pos(av,ca)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(F,rf)
+    RecibirMensaje(n,rf)
+    cuadrado(f,n)
+    depositar(f,av,ca)
+    EnviarMensaje(id, rf)
+    EnviarMensaje(V,rf)
+    EnviarMensaje(f,rf)
+  fin
+  robot servidor
+  variables
+    id,aux,cant, terminaron, n: numero
+    ok: boolean
+  comenzar
+    asignar
+    terminaron:= 0
+    cant:= 0
+    mientras (terminaron < 3)
+      RecibirMensaje(id, *)
+      si (id = 1)
+        RecibirMensaje(ok,r1)
+        si (ok = V)
+          RecibirMensaje(aux,r1)
+          cant:= aux + cant
+          terminaron:= terminaron + 1
+        sino
+          Random(n,1,5)
+          EnviarMensaje(n,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(ok,r2)
+          si (ok = V)
+            RecibirMensaje(aux,r2)
+            cant:= aux + cant
+            terminaron:= terminaron + 1
+          sino
+            Random(n,1,5)
+            EnviarMensaje(n,r2)
+        sino
+          si (id = 3)
+            RecibirMensaje(ok,r3)
+            si (ok = V)
+              RecibirMensaje(aux,r3)
+              cant:= aux + cant
+              terminaron:= terminaron + 1
+            sino
+              Random(n,1,5)
+              EnviarMensaje(n,r3)
+    Pos(50,50)
+    repetir cant
+      depositarFlor
+    Informar('la cantidad de flores juntadas es ' , cant)          
+  fin
+variables
+  r1,r2,r3: cliente
+  rf: servidor
+comenzar
+  AsignarArea(rf,esq)
+  AsignarArea(rf,esqServidor)
+  AsignarArea(r1,esq)
+  AsignarArea(r1,a1)
+  AsignarArea(r2,esq)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,esq)
+  AsignarArea(r3,a3)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 8,1)
+  Iniciar(r3, 15,1)
+  Iniciar(rf, 22,1)
+fin

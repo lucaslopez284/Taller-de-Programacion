@@ -1,0 +1,179 @@
+
+programa ejemplo
+procesos
+  proceso vaciar (ES f: numero; ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso DepositarTodo (ES f: numero; ES p: numero)
+  comenzar
+    repetir f
+      depositarFlor
+    repetir p
+      depositarPapel
+    f:= 0
+    p:= 0
+  fin
+areas
+  esq: AreaP (50,50,50,50)
+  ca1: AreaP (1,1,100,1)
+  ca2: AreaP (1,2,100,2)
+  ca3: AreaP (1,3,100,3)
+  fis: AreaP (1,4,1,4)
+robots
+  robot robot1
+  variables 
+    f, p, av, ca: numero
+    ok: boolean
+  comenzar
+    f:= 0
+    p:= 0
+    ca:= PosCa
+    derecha
+    repetir 9
+      vaciar (f,p)
+      mover
+    vaciar (f,p)
+    av:= PosAv
+    BloquearEsquina (50,50)
+    Pos(50,50)
+    DepositarTodo(f,p)
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+    EnviarMensaje(V, r3)
+    EnviarMensaje(V, r2)
+    repetir 2
+      RecibirMensaje(ok, *)
+    repetir 9
+      repetir 10
+        mover
+        vaciar(f,p)  
+      av:= PosAv
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      DepositarTodo(f,p)
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      EnviarMensaje(V, r2)
+      EnviarMensaje(V, r3)
+      repetir 2
+        RecibirMensaje(ok, *)
+    EnviarMensaje(V, rf)
+  fin
+  robot robot2
+  variables 
+    f, p, av, ca: numero
+    ok: boolean
+  comenzar
+    f:= 0
+    p:= 0
+    ca:= PosCa
+    derecha
+    repetir 9
+      vaciar (f,p)
+      mover
+    vaciar (f,p)
+    av:= PosAv
+    BloquearEsquina (50,50)
+    Pos(50,50)
+    DepositarTodo(f,p)
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+    EnviarMensaje(V, r1)
+    EnviarMensaje(V, r3)
+    repetir 2
+      RecibirMensaje(ok, *)
+    repetir 9
+      repetir 10
+        mover
+        vaciar(f,p)  
+      av:= PosAv
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      DepositarTodo(f,p)
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      EnviarMensaje(V, r1)
+      EnviarMensaje(V, r3)
+      repetir 2
+        RecibirMensaje(ok, *)
+    EnviarMensaje(V, rf)
+  fin
+  robot robot3
+  variables 
+    f, p, av, ca: numero
+    ok: boolean
+  comenzar
+    f:= 0
+    p:= 0
+    ca:= PosCa
+    derecha
+    repetir 9
+      vaciar (f,p)
+      mover
+    vaciar (f,p)
+    av:= PosAv
+    BloquearEsquina (50,50)
+    Pos(50,50)
+    DepositarTodo(f,p)
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+    EnviarMensaje(V, r1)
+    EnviarMensaje(V, r2)
+    repetir 2
+      RecibirMensaje(ok, *)
+    repetir 9
+      repetir 10
+        mover
+        vaciar(f,p)  
+      av:= PosAv
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      DepositarTodo(f,p)
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      EnviarMensaje(V, r1)
+      EnviarMensaje(V, r2)
+      repetir 2
+        RecibirMensaje(ok, *)
+    EnviarMensaje(V, rf)
+  fin
+  robot fiscal
+  variables 
+    flo: numero
+    ok: boolean
+  comenzar
+    flo:= 0
+    repetir 3
+      RecibirMensaje(ok,*)
+    Pos(50,50)
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flo:= flo + 1
+    Pos(1,4)
+    Informar('cant flores ' , flo)
+  fin
+variables
+  r1: robot1
+  r2: robot2
+  r3: robot3
+  rf: fiscal
+comenzar
+  AsignarArea(r1,ca1)
+  AsignarArea(r1,esq)
+  AsignarArea(r2,ca2)
+  AsignarArea(r2,esq)
+  AsignarArea(r3,ca3)
+  AsignarArea(r3,esq)
+  AsignarArea(rf,fis)
+  AsignarArea(rf,esq)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 1,2)
+  Iniciar(r3, 1,3)
+  Iniciar(rf, 1,4)
+fin

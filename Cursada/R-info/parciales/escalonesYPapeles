@@ -1,0 +1,93 @@
+
+programa ejemplo
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarPapeles(ES e: numero; ES p: numero)
+  comenzar
+    si ~(HayPapelEnLaEsquina)
+      e:= e + 1
+    sino
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+        p:= p + 1
+  fin
+  proceso escalon(E an: numero; E al: numero; ES e: numero)
+  variables
+    p, av,ca: numero
+  comenzar
+    p:= 0
+    juntarPapeles(e,p)
+    repetir al
+      mover
+      juntarPapeles(e,p)
+    av:= PosAv
+    ca:= PosCa
+    repetir p
+      BloquearEsquina(99,99)
+      Pos(99,99)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(99,99)
+    p:= 0
+    derecha
+    repetir an
+      mover
+      juntarPapeles(e,p)
+    av:= PosAv
+    ca:= PosCa
+    repetir p
+      BloquearEsquina(99,99)
+      Pos(99,99)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(99,99)
+    izquierda
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot papelero
+  variables
+    esq, ancho, alto: numero
+  comenzar
+    esq:= 0
+    repetir 4
+      Random(alto,1,3)
+      Random(ancho,2,4)
+      escalon(ancho,alto,esq)
+    EnviarMensaje(V,rf)
+    EnviarMensaje(esq,rf)
+  fin
+  robot fiscal
+  variables
+    ok: boolean
+    esq, aux: numero
+  comenzar
+    esq:= 0
+    repetir 3
+      RecibirMensaje(ok,*)
+      RecibirMensaje(aux,*)
+      esq:= esq + aux
+    Pos(99,99)
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+    Pos(1,1)
+    Informar('total esquinas vaciadas' , esq)
+  fin
+variables
+  rf: fiscal
+  r1,r2,r3: papelero
+comenzar
+  AsignarArea(rf, ciudad)
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 32,1)
+  Iniciar(r3, 62,1)
+fin

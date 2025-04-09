@@ -1,0 +1,150 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso Sigan
+  comenzar
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarPapeles(ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      p:= p + 1
+      tomarPapel
+  fin
+  proceso escalon(ES p: numero; ES e: numero; E al: numero; E an: numero; E n: numero)
+  variables
+    aux, av,ca: numero
+  comenzar
+    aux:= 0
+    repetir al
+      si(HayPapelEnLaEsquina)
+        e:= e + 1
+        juntarPapeles(aux)
+      mover
+    derecha
+    p:= p + aux
+    av:= PosAv
+    ca:= PosCa
+    BloquearEsquina(99,99)
+    Pos(99,99)
+    repetir aux
+      depositarPapel
+    Pos(av,ca)
+    LiberarEsquina(99,99)
+    aux:= 0
+    repetir an
+      si(HayPapelEnLaEsquina)
+        e:= e + 1
+        juntarPapeles(aux)
+      mover
+    izquierda
+    si (n = 4)
+      si(HayPapelEnLaEsquina)
+        e:= e + 1
+        juntarPapeles(aux)
+    av:= PosAv
+    ca:= PosCa
+    BloquearEsquina(99,99)
+    Pos(99,99)
+    repetir aux
+      depositarPapel
+    Pos(av,ca)
+    LiberarEsquina(99,99)
+    p:= p + aux
+  fin
+areas
+  area1: AreaP (2,1,31,100)
+  area2: AreaP (32,1,61,100)
+  area3: AreaP (62,1,91,100)
+  areaF: AreaP (1,1,1,1)
+  deposito: AreaC (99,99,99,99)
+robots
+  robot papelero
+  variables
+    esq, p, aux, av, ca, an, al, n, id: numero
+    ok: boolean
+  comenzar
+    p:= 0
+    esq:= 0
+    n:= 1
+    RecibirMensaje(id,rf)
+    repetir 4
+      Random(al,1,3)
+      Random(an,2,4)
+      escalon(p,esq,al,an, n)
+      EnviarMensaje(V,rf)
+      RecibirMensaje(ok,rf)
+      n:= n + 1
+    EnviarMensaje(id,rf)
+    EnviarMensaje(p,rf)
+    EnviarMensaje(esq,rf)
+  fin
+  robot fiscal
+  variables
+    pap, esq, aux, aux2, quien, av, ca: numero
+    ok: boolean
+  comenzar
+    Asignar
+    repetir 4
+      repetir 3
+        RecibirMensaje(ok,*)
+      Sigan
+    pap:= 0
+    esq:= 0
+    repetir 3
+      RecibirMensaje(quien,*)
+      si (quien = 1)
+        RecibirMensaje(aux,r1)
+        pap:= pap + aux
+        RecibirMensaje(aux,r1)
+        esq:= esq + aux
+      sino
+        si (quien = 2)
+          RecibirMensaje(aux,r2)
+          pap:= pap + aux
+          RecibirMensaje(aux,r2)
+          esq:= esq + aux
+        sino
+          si (quien = 3)
+            RecibirMensaje(aux,r3)
+            pap:= pap + aux
+            RecibirMensaje(aux2,r3)
+            esq:= esq + aux
+    av:= PosAv
+    ca:= PosCa
+    Pos(99,99)
+    repetir pap
+      tomarPapel
+    Pos(av,ca)
+    Informar('la cant de esquinas vaciadas es', esq)
+  fin
+variables
+  r1,r2,r3: papelero
+  rf: fiscal
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, area2)
+  AsignarArea(r2, deposito)
+  AsignarArea(r3, area3)
+  AsignarArea(r3, deposito)
+  AsignarArea(rf, areaF)
+  AsignarArea(rf, deposito)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 32,1)
+  Iniciar(r3, 62,1)
+fin

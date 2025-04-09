@@ -1,0 +1,148 @@
+
+programa ejemplo
+procesos
+  proceso depositarFlores(E av: numero; E ca: numero)
+  variables
+    a,c: numero
+  comenzar
+    repetir 2
+      Random (a,1,5)
+      Random(c,1,5)
+      BloquearEsquina(a,c)
+      Pos(a,c)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(a,c)
+  fin
+  proceso depositarPapeles(E av: numero; E ca: numero)
+  variables
+    a,c: numero
+  comenzar
+    repetir 2
+      Random (a,1,5)
+      Random(c,1,5)
+      BloquearEsquina(a,c)
+      Pos(a,c)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(a,c)
+  fin
+  proceso buscarFlores(ES f: numero ;E av: numero; E ca: numero)
+  variables
+    a,c: numero
+  comenzar
+    repetir 2
+      Random (a,1,5)
+      Random(c,1,5)
+      BloquearEsquina(a,c)
+      Pos(a,c)
+      si (HayFlorEnLaEsquina)
+        tomarFlor
+        f:= f + 1
+      Pos(av,ca)
+      LiberarEsquina(a,c)
+  fin
+  proceso buscarPapeles(ES p: numero ;E av: numero; E ca: numero)
+  variables
+    a,c: numero
+  comenzar
+    repetir 2
+      Random (a,1,5)
+      Random(c,1,5)
+      BloquearEsquina(a,c)
+      Pos(a,c)
+      si (HayPapelEnLaEsquina)
+        tomarPapel
+        p:= p + 1
+      Pos(av,ca)
+      LiberarEsquina(a,c)
+  fin
+areas
+  cuadrado: AreaPC (1,1,5,5)
+  f1: AreaP (6,1,6,1)
+  f2: AreaP (6,2,6,2)
+  p1: AreaP (6,3,6,3)
+  p2: AreaP (6,4,6,4)
+  fis: AreaP (6,5,6,5)
+robots
+  robot buscadorEquipoFlor
+  variables
+    p,av,ca: numero
+    ok: boolean
+  comenzar
+    p:= 0
+    av:= PosAv
+    ca:= PosCa
+    RecibirMensaje(ok,rep)
+    mientras(p< 2) 
+      buscarPapeles(p,av,ca)
+    EnviarMensaje(1,rf)
+  fin
+  robot buscadorEquipoPapel
+  variables
+    f,av,ca: numero
+    ok: boolean
+  comenzar
+    f:= 0
+    av:= PosAv
+    ca:= PosCa
+    RecibirMensaje(ok,ref)
+    mientras(f< 2)
+      buscarFlores(f,av,ca)
+    EnviarMensaje(2,rf)
+  fin
+  robot escondedorF
+  variables
+    av,ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    depositarFlores(av,ca)
+    EnviarMensaje(V,rbp)
+  fin
+  robot escondedorP
+  variables
+    av,ca: numero
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+    depositarPapeles(av,ca)
+    EnviarMensaje(V,rbf)
+  fin
+  robot fiscal
+  variables 
+    gano, aux: numero
+  comenzar
+    gano:= 0
+    repetir 2
+      RecibirMensaje(aux,*)
+      si (gano = 0)
+        gano:= aux
+    si (gano = 1)
+      Informar('Gano el equipo flo', gano)
+    sino
+      si (gano = 2)
+        Informar('Gano el equipo pap', gano)
+  fin
+variables
+  rf: fiscal
+  rbf: buscadorEquipoFlor
+  rbp: buscadorEquipoPapel
+  ref: escondedorF
+  rep: escondedorP
+comenzar
+  AsignarArea(rbf, cuadrado)
+  AsignarArea(rbp, cuadrado)
+  AsignarArea(ref, cuadrado)
+  AsignarArea(rep, cuadrado)
+  AsignarArea(rf, fis)
+  AsignarArea(rbf, f1)
+  AsignarArea(rbp, p1)
+  AsignarArea(ref, f2)
+  AsignarArea(rep, p2)
+  Iniciar(rbf, 6,1)
+  Iniciar(ref, 6,2)
+  Iniciar(rbp, 6,3)
+  Iniciar(rep, 6,4)
+  Iniciar(rf, 6,5)
+fin

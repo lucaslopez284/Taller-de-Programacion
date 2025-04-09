@@ -1,0 +1,153 @@
+
+programa ejemplo
+procesos
+  proceso opuesto
+  comenzar
+    repetir 2
+      derecha
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+  fin
+  proceso juntarFlores (ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso juntarPapeles (ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso tramoFlores(ES f: numero)
+  comenzar
+    juntarFlores(f)
+    repetir 4
+      mover
+      juntarFlores(f)
+  fin
+  proceso tramoPapeles(ES p: numero)
+  comenzar
+    juntarPapeles(p)
+    repetir 4
+      mover
+      juntarPapeles(p)
+  fin
+areas
+  tramo1: AreaP (1,5,5,5)
+  tramo2: AreaP (7,7,11,7)
+  tramo3: AreaP (1,7,5,7)
+  tramo4: AreaP (7,5,11,5)
+  esqF: AreaP(1,6,1,6)
+  esq: AreaPC (6,6,6,6)
+robots
+  robot robot1
+  variables
+    f, p, av, ca, id: numero
+  comenzar
+    RecibirMensaje(id, rf)
+    f:= 0
+    derecha
+    ca:= PosCa
+    tramoFlores(f)
+    av:= PosAv
+    BloquearEsquina(6,6)
+    Pos(6,6)
+    juntarFlores(f)
+    Pos(av + 2, ca + 2)
+    LiberarEsquina(6,6)
+    tramoFlores(f)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(f,rf)
+    p:= 0
+    opuesto
+    tramoPapeles(p)
+    BloquearEsquina(6,6)
+    Pos(6,6)
+    juntarPapeles(p)
+    Pos(av, ca)
+    LiberarEsquina(6,6)
+    tramoPapeles(p)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(p,rf)
+  fin
+  robot robot2
+  variables
+    f, p, av, ca, id: numero
+  comenzar
+    RecibirMensaje(id, rf)
+    f:= 0
+    derecha
+    ca:= PosCa
+    tramoFlores(f)
+    av:= PosAv
+    BloquearEsquina(6,6)
+    Pos(6,6)
+    juntarFlores(f)
+    Pos(av + 2, ca - 2)
+    LiberarEsquina(6,6)
+    tramoFlores(f)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(f,rf)
+    p:= 0
+    p:= 0
+    opuesto
+    tramoPapeles(p)
+    BloquearEsquina(6,6)
+    Pos(6,6)
+    juntarPapeles(p)
+    Pos(av, ca)
+    LiberarEsquina(6,6)
+    tramoPapeles(p)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(p,rf)
+  fin
+  robot fiscal
+  variables
+    quien, aux, max, ganador, max2, ganador2: numero
+  comenzar
+    Asignar
+    max:= 0
+    repetir 2
+      RecibirMensaje(quien, *)
+      si (quien = 1)
+        RecibirMensaje(aux,r1)
+      sino
+        si (quien = 2)
+          RecibirMensaje(aux,r2)
+      si (aux > max)
+        max:= aux
+        ganador:= quien
+    Informar('el ganador en flores es', ganador)
+    repetir 2
+      RecibirMensaje(quien, *)
+      si (quien = 1)
+        RecibirMensaje(aux,r1)
+      sino
+        si (quien = 2)
+          RecibirMensaje(aux,r2)
+      si (aux > max)
+        max2:= aux
+        ganador2:= quien
+    Informar('el ganador en papeles es', ganador2)
+  fin
+variables
+  r1: robot1
+  r2: robot2
+  rf: fiscal
+comenzar
+  AsignarArea(r1, tramo1)
+  AsignarArea(r1, tramo2)
+  AsignarArea(r1, esq)
+  AsignarArea(r2, tramo3)
+  AsignarArea(r2, tramo4)
+  AsignarArea(r2, esq)
+  AsignarArea(rf, esqF)
+  Iniciar(rf, 1,6)
+  Iniciar(r1, 1,5)
+  Iniciar(r2, 1,7)
+fin

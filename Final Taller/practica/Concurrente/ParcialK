@@ -1,0 +1,131 @@
+
+programa ejemplo
+procesos
+  proceso juntarFlores (ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso cuadrado(ES f: numero; E n: numero)
+  comenzar
+    repetir 4
+      repetir n
+        mover
+        juntarFlores(f)
+      derecha
+  fin
+  proceso asignar 
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso depositar(E f: numero; E av: numero; E ca: numero)
+  comenzar
+    repetir f
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+  fin
+  proceso pidoYHago (ES f: numero; E id: numero; ES n: numero)
+  comenzar
+    EnviarMensaje(id,rs)
+    EnviarMensaje(F,rs)
+    RecibirMensaje(n,rs)
+    cuadrado(f,n)     
+  fin
+  proceso finalizo (E f: numero; E id: numero)
+  comenzar
+    EnviarMensaje(id,rs)
+    EnviarMensaje(V,rs)
+    EnviarMensaje(f,rs)
+  fin
+  proceso servicio (ES f: numero)
+  variables
+    ok: boolean
+    n,f,id, terminaron: numero
+  comenzar
+    f:= 0
+    repetir 12
+      RecibirMensaje(id,*)
+      si (id = 1) 
+        RecibirMensaje(ok,r1)
+        si(ok = F) 
+          Random (n,1,5)
+          EnviarMensaje(n,r1)
+        sino
+          RecibirMensaje(n,r1)
+          f:= f + n
+      sino
+        si (id = 2) 
+          RecibirMensaje(ok,r2)
+          si(ok = F) 
+            Random (n,1,5)
+            EnviarMensaje(n,r2)
+          sino
+            RecibirMensaje(n,r2)
+            f:= f + n
+        sino
+          si (id = 3) 
+            RecibirMensaje(ok,r3)
+            si(ok = F) 
+              Random (n,1,5)
+              EnviarMensaje(n,r3)
+            sino
+              RecibirMensaje(n,r3)
+              f:= f + n    
+  fin
+areas
+  a1: AreaP (1,1,6,18)
+  a2: AreaP (8,1,13,18)
+  a3: AreaP (15,1,20,18)
+  as: AreaP (22,1,22,1)
+  esq: AreaC (50,50,50,50)
+robots
+  robot cliente
+  variables
+    id, f, n, av, ca: numero
+  comenzar
+    RecibirMensaje(id,rs)
+    f:= 0
+    av:= PosAv
+    ca:= PosCa
+    repetir 2
+      pidoYHago(f,id,n)
+      ca:= ca + n + 1
+      Pos(av,ca)
+    pidoYHago(f,id,n)
+    depositar(f,av,ca)
+    finalizo(f,id)
+  fin
+  robot servidor
+  variables
+    f: numero
+  comenzar
+    asignar
+    servicio(f)
+    Pos(50,50)
+    repetir f
+      tomarFlor
+    Informar('La cantidad juntada es ' , f)
+  fin
+variables
+  r1,r2,r3: cliente
+  rs: servidor
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(r1, esq)
+  AsignarArea(r2, a2)
+  AsignarArea(r2, esq)
+  AsignarArea(r3, a3)
+  AsignarArea(r3, esq)
+  AsignarArea(rs, as)
+  AsignarArea(rs, esq)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 8,1)
+  Iniciar(r3, 15,1)
+  Iniciar(rs, 22,1)
+fin

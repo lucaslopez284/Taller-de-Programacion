@@ -1,0 +1,134 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso juntarPapeles(ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso recorrerAvenida(E numAv: numero)
+  comenzar
+    Pos(numAv, 1)
+    repetir 99
+      mover
+  fin
+areas
+  azul: AreaPC (2,4,12,24)
+  verde: AreaPC (16,4,26,24)
+  areaFiscal: AreaP (100,100,100,100)
+robots
+  robot florero
+  variables
+    id, flo, av, ca: numero
+  comenzar
+    flo:= 0
+    derecha
+    ca:= PosCa
+    RecibirMensaje(id,rf)
+    repetir 4
+      juntarFlores(flo)
+      mover
+    juntarFlores(flo)
+    av:= PosAv + 1
+    BloquearEsquina(av,ca)
+    mover
+    juntarFlores(flo)
+    mover
+    LiberarEsquina(av,ca)
+    repetir 4
+      juntarFlores(flo)
+      mover
+    juntarFlores(flo)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(flo,rf)
+  fin
+  robot papelero
+  variables
+    id, p, av, ca: numero
+  comenzar
+    p:= 0
+    av:= PosAv
+    RecibirMensaje(id,rf)
+    repetir 7
+      juntarPapeles(p)
+      mover
+    juntarPapeles(p)
+    ca:= PosCa + 1
+    BloquearEsquina(av,ca)
+    mover
+    juntarPapeles(p)
+    mover
+    LiberarEsquina(av,ca)
+    repetir 11
+      juntarPapeles(p)
+      mover
+    juntarPapeles(p)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(p,rf)
+  fin
+  robot fiscal
+  variables
+    quien, equipoA, equipoV, aux, empate, terminaron: numero
+    ok: boolean
+  comenzar
+    Asignar
+    equipoA:= 0
+    equipoV:= 0
+    empate:= 999
+    terminaron:= 0
+    repetir 4
+      RecibirMensaje(quien, *)
+      si (quien = 1)
+        RecibirMensaje(aux,r1)
+        equipoA:= equipoA + aux
+      sino
+        si (quien = 2)
+          RecibirMensaje(aux,r2)
+          equipoA:= equipoA + aux
+        sino
+          si (quien = 3)
+            RecibirMensaje(aux,r3)
+            equipoV:= equipoV + aux
+          sino
+            si (quien = 4)
+              RecibirMensaje(aux,r4)
+              equipoV:= equipoV + aux     
+    si (equipoA = equipoV)
+      Informar(' fue empate' , empate)
+    sino
+      si (equipoA > equipoV)
+        Informar(' gano el equipo azul que junto' , equipoA)
+      sino
+        si (equipoA < equipoV)
+          Informar(' gano el equipo verde que junto' , equipoV)
+  fin
+variables
+  r1,r3: florero
+  r2,r4: papelero
+  rf: fiscal
+comenzar
+  AsignarArea(r1, azul)
+  AsignarArea(r2, azul)
+  AsignarArea(r3, verde)
+  AsignarArea(r4, verde)
+  AsignarArea(rf,areaFiscal)
+  Iniciar(rf, 100,100)
+  Iniciar(r1, 2,12)
+  Iniciar(r2, 7,4)
+  Iniciar(r3, 16,12)
+  Iniciar(r4, 21,4)
+fin

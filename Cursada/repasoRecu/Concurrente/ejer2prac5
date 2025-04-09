@@ -1,0 +1,126 @@
+
+programa ejemplo
+procesos
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso limpiar (ES f: numero)
+  comenzar
+    juntarFlores(f)
+    juntarPapeles
+  fin
+  proceso asignar 
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso etapa (ES f: numero)
+  comenzar
+    repetir 10
+      mover
+      limpiar(f)
+  fin
+  proceso depositar(E aux: numero; E av: numero; E ca: numero)
+  comenzar
+    repetir aux
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+  fin
+  proceso EnvioYRecepcion(E id: numero)
+  variables
+    ok: boolean
+  comenzar
+    si (id= 1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      repetir 2
+        RecibirMensaje(ok,*)
+    sino
+      si (id = 2)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r3)
+        repetir 2
+          RecibirMensaje(ok,*)
+      sino
+        si (id = 3)
+          EnviarMensaje(V,r1)
+          EnviarMensaje(V,r2)
+          repetir 2
+            RecibirMensaje(ok,*)
+  fin
+areas
+  ca1: AreaP (1,1,100,1)
+  ca2: AreaP (1,2,100,2)
+  ca3: AreaP (1,3,100,3)
+  esqFis: AreaP (1,4,1,4)
+  esq: AreaPC (50,50,50,50)
+robots
+  robot recolector
+  variables
+    id, f, aux, av,ca: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    ca:= PosCa
+    derecha
+    aux:= 0
+    f:= 0
+    limpiar(aux)
+    repetir 9
+      mover
+      limpiar(aux)
+    EnvioYRecepcion(id)
+    f:= aux
+    av:= PosAv
+    depositar(aux,av,ca)
+    repetir 9
+      aux:= 0
+      etapa(aux)
+      av:= PosAv
+      depositar(aux,av,ca)
+      f:= f + aux
+      EnvioYRecepcion(id)
+    EnviarMensaje(f,rf)
+  fin
+  robot fiscal
+  variables
+    f, aux: numero
+  comenzar
+    asignar
+    f:= 0
+    repetir 3
+      RecibirMensaje(aux,*)
+      f:= f + aux
+    Pos(50,50) 
+    repetir f
+      tomarFlor
+    Informar('Las flores juntadas fueron ' , f)
+  fin
+variables
+  r1,r2,r3: recolector
+  rf: fiscal
+comenzar
+  AsignarArea(r1, esq)
+  AsignarArea(r2, esq)
+  AsignarArea(r3, esq)
+  AsignarArea(rf, esq)
+  AsignarArea(r1, ca1)
+  AsignarArea(r2, ca2)
+  AsignarArea(r3, ca3)
+  AsignarArea(rf, esqFis)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 1,2)
+  Iniciar(r3, 1,3)
+  Iniciar(rf, 1,4)
+fin

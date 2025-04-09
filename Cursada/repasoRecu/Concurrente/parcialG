@@ -1,0 +1,180 @@
+
+programa ejemplo
+procesos
+  proceso juntarFlores (ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso juntarPapeles (ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso juntar (ES f: numero ; ES p: numero)
+  comenzar
+    juntarFlores(f)
+    juntarPapeles(p)
+  fin
+  proceso asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+  fin
+  proceso limpiarEsquina
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso recorrerAvenida(ES f: numero ; ES p: numero)
+  comenzar
+    juntar(f,p)
+    repetir 99
+      mover
+      juntar(f,p)
+  fin
+  proceso vaciarBolsa (E f: numero; E p: numero)
+  comenzar
+    repetir f
+      depositarFlor
+    repetir p
+      depositarPapel
+  fin
+  proceso depositar(E f: numero; E p: numero; E av: numero; E ca: numero)
+  variables
+    x,y: numero
+  comenzar
+    x:= PosAv
+    y:= PosCa
+    repetir f
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      depositarFlor
+      Pos(x,y)
+      LiberarEsquina(av,ca)
+    repetir p
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      depositarPapel
+      Pos(x,y)
+      LiberarEsquina(av,ca)
+  fin
+  proceso limpiarCuadrante
+  variables
+    av: numero
+  comenzar
+    Pos(40,40)
+    av:= PosAv
+    repetir 5
+      limpiarEsquina
+      repetir 5
+        mover
+        limpiarEsquina
+      av:= av + 1
+      Pos(av,40)
+    limpiarEsquina
+    repetir 5 
+      mover
+      limpiarEsquina
+  fin
+areas
+  cuadrante: AreaC (40,40,45,45)
+  esqF: AreaP(1,1,1,1)
+  av4: AreaP(4,1,4,100)
+  av5: AreaP(5,1,5,100)
+  av6: AreaP(6,1,6,100)
+  av7: AreaP(7,1,7,100)
+  av8: AreaP(8,1,8,100)
+  av9: AreaP(9,1,9,100)
+  av10: AreaP(10,1,10,100)
+  av11: AreaP(11,1,11,100)
+robots
+  robot recolector
+  variables
+    f,p,av,ca, id: numero
+    ok: boolean
+  comenzar
+    RecibirMensaje(id,rf)
+    repetir 3 
+      f:= 0
+      p:= 0
+      recorrerAvenida(f,p)
+      EnviarMensaje(id,rf)
+      EnviarMensaje(F,rf)
+      RecibirMensaje(av,rf)
+      RecibirMensaje(ca,rf)
+      depositar(f,p,av,ca)
+      av:= PosAv + 2
+      ca:= 1
+      Pos(av,ca)
+    f:= 0
+    p:= 0
+    recorrerAvenida(f,p)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(F,rf)
+    RecibirMensaje(av,rf)
+    RecibirMensaje(ca,rf)
+    depositar(f,p,av,ca)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(V,rf)
+  fin
+  robot fiscal
+  variables
+    av,ca,id, cant1,cant2, pri, terminaron: numero
+    ok: boolean
+  comenzar
+    asignar
+    pri:= 0
+    cant1:= 0
+    cant2:= 0
+    terminaron:= 0
+    mientras(terminaron < 2)
+      Random (av,40,45)
+      Random( ca,40,45)
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(ok,r1)
+        si (ok = V)
+          terminaron:= terminaron + 1
+          si(pri = 0)
+            pri:= id
+        si (ok = F)
+          EnviarMensaje(av,r1)
+          EnviarMensaje(ca,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(ok,r2)
+          si (ok = V)
+            terminaron:= terminaron + 1
+            si (pri = 0)
+              pri:= id
+          sino
+            EnviarMensaje(av,r2)
+            EnviarMensaje(ca,r2)
+    limpiarCuadrante
+    Informar('el que termino primero es ' , pri)
+  fin
+variables
+  r1,r2: recolector
+  rf: fiscal
+comenzar
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(rf, cuadrante)
+  AsignarArea(rf, esqF)
+  AsignarArea(r1, av4)
+  AsignarArea(r2, av5)
+  AsignarArea(r1, av6)
+  AsignarArea(r2, av7)
+  AsignarArea(r1, av8)
+  AsignarArea(r2, av9)
+  AsignarArea(r1, av10)
+  AsignarArea(r2, av11)
+  Iniciar(r1, 4,1)
+  Iniciar(r2, 5,1)
+  Iniciar(rf, 1,1)
+fin

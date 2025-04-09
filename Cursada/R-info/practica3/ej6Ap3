@@ -1,0 +1,230 @@
+
+programa ejemplo
+procesos
+  proceso invertir
+  comenzar
+    repetir 2
+      derecha
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso juntarPapeles 
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso juntarTodo
+  comenzar
+    juntarFlores
+    juntarPapeles
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso recta1
+  comenzar
+    mientras (HayFlorEnLaBolsa) & (PosAv < 100)
+      depositarFlor
+      mover
+  fin
+  proceso recta2
+  comenzar
+    mientras (HayFlorEnLaBolsa) & (HayPapelEnLaBolsa) & (PosAv < 100)
+      depositarFlor
+      depositarPapel
+      mover
+  fin
+  proceso recta3
+  comenzar
+    mientras(HayPapelEnLaBolsa) & (PosAv < 100)
+      depositarPapel
+      mover
+  fin
+areas
+  areaf: AreaP (1,1,1,1)
+  area1: AreaPC(2,2,15,15)
+  area2: AreaPC(1,20,100,22)
+robots
+  robot robot1
+  variables
+    soy, ca: numero
+  comenzar
+    RecibirMensaje(soy, rf)
+    repetir 5
+      juntarFlores
+      mover
+    juntarFlores
+    derecha
+    repetir 2
+      mover
+      juntarFlores
+    BloquearEsquina(5,7)
+    mover
+    juntarFlores
+    mover
+    LiberarEsquina(5,7)
+    juntarFlores
+    mover
+    derecha
+    juntarFlores
+    mover
+    juntarFlores
+    BloquearEsquina(7,5)
+    mover
+    juntarFlores
+    mover
+    LiberarEsquina(7,5)
+    repetir 2
+      juntarFlores
+      mover
+    derecha
+    repetir 5
+      juntarFlores
+      mover
+    invertir
+    EnviarMensaje(1,rf)
+    RecibirMensaje(ca,rf)
+    Pos(1,ca)
+    recta1
+  fin
+  robot robot2
+  variables
+    soy, ca: numero
+  comenzar
+    RecibirMensaje(soy, rf)
+    juntarTodo
+    mover
+    juntarTodo
+    BloquearEsquina(5,7)
+    mover
+    juntarTodo
+    mover
+    LiberarEsquina(5,7)
+    repetir 6
+      juntarTodo
+      mover
+    derecha
+    repetir 3
+      juntarTodo
+      mover
+    juntarTodo
+    BloquearEsquina(9,14)
+    mover
+    juntarTodo
+    mover
+    LiberarEsquina(9,14)
+    repetir 4
+      juntarTodo
+      mover
+    derecha
+    repetir 4
+      juntarTodo
+      mover
+    juntarTodo
+    BloquearEsquina(14,9)
+    mover
+    juntarTodo
+    mover
+    LiberarEsquina(14,9)
+    repetir 3
+      juntarTodo
+      mover
+    derecha
+    repetir 6 
+      juntarTodo
+      mover
+    juntarTodo
+    BloquearEsquina(7,5)
+    mover
+    juntarTodo
+    mover
+    LiberarEsquina(7,5)
+    juntarTodo
+    mover
+    invertir
+    EnviarMensaje(2,rf)
+    RecibirMensaje(ca,rf)
+    Pos(1,ca)
+    recta2
+  fin
+  robot robot3
+  variables
+    soy, ca: numero
+  comenzar
+    RecibirMensaje(soy, rf)
+    repetir 4
+      juntarPapeles
+      mover
+    juntarPapeles
+    BloquearEsquina(9,14)
+    mover
+    juntarPapeles
+    mover
+    LiberarEsquina(9,14)
+    derecha
+    repetir 2
+      repetir 6
+        juntarPapeles
+        mover
+      derecha
+    juntarPapeles
+    BloquearEsquina(14,9)
+    mover
+    juntarPapeles
+    mover
+    LiberarEsquina(14,9)
+    repetir 4
+      juntarPapeles
+      mover
+    invertir
+    EnviarMensaje(3,rf)
+    RecibirMensaje(ca,rf)
+    Pos(1,ca)
+    recta3
+  fin
+  robot fiscal
+  variables
+    ca, quien:numero
+  comenzar
+    Asignar
+    ca:= 20
+    repetir 3
+      RecibirMensaje(quien,*)
+      si (quien = 1)
+        EnviarMensaje(ca, r1)
+      sino
+        si (quien = 2)
+          EnviarMensaje(ca,r2)
+        sino 
+          EnviarMensaje(ca,r3)
+      ca:= ca + 1
+  fin
+variables
+  rf: fiscal
+  r1: robot1
+  r2: robot2
+  r3: robot3
+comenzar
+  AsignarArea(rf, areaf)
+  AsignarArea(r1, area1)
+  AsignarArea(r1, area2)
+  AsignarArea(r2, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area1)
+  AsignarArea(r3, area2)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 2,2)
+  Iniciar(r2, 5,5)
+  Iniciar(r3, 9,9)
+fin

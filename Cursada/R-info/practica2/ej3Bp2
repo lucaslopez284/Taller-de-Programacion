@@ -1,0 +1,97 @@
+
+programa ejemplo
+procesos
+  proceso juntarPapeles (ES p: numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso juntarFlores (ES flores: numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      flores := flores + 1
+  fin
+  proceso recorrerCalleP  (ES p: numero)
+  comenzar
+    repetir 9
+      juntarPapeles(p)
+      mover
+    juntarPapeles (p)
+  fin
+  proceso recorrerCalleF (ES f: numero)
+  comenzar
+    repetir 9
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+  fin
+areas
+  Ciudad: AreaC(1,1,100,100)
+robots
+  robot a1
+  variables
+    p: numero
+  comenzar
+    derecha
+    p:= 0
+    recorrerCalleP(p)
+    Pos(21,1)
+    recorrerCalleP(p)
+    EnviarMensaje (p, ra2)
+  fin
+  robot a2
+  variables
+    p: numero
+    aux: numero
+  comenzar
+    derecha
+    p:= 0
+    recorrerCalleP(p)
+    Pos(31,1)
+    recorrerCalleP(p)
+    RecibirMensaje(aux, ra1)
+    p:= p + aux
+    Informar ('papeles juntados por equipo A ', p)
+  fin
+  robot b1
+  variables
+    f: numero
+  comenzar
+    derecha
+    f:= 0
+    recorrerCalleF(f)
+    Pos(21,5)
+    recorrerCalleF(f)
+    EnviarMensaje (f, rb2)
+  fin
+  robot b2
+  variables
+    f: numero
+    aux: numero
+  comenzar
+    derecha
+    f:= 0
+    recorrerCalleF(f)
+    Pos(31,5)
+    recorrerCalleF(f)
+    RecibirMensaje(aux, rb1)
+    f:= f + aux
+    Informar ('flores juntadas por equipo B ', f)
+  fin
+variables
+  ra1: a1
+  ra2: a2
+  rb1: b1
+  rb2: b2
+comenzar
+  AsignarArea(ra1, Ciudad)
+  AsignarArea(ra2, Ciudad)
+  AsignarArea(rb1, Ciudad)
+  AsignarArea(rb2, Ciudad)
+  Iniciar(ra1, 1,1)
+  Iniciar(ra2, 11,1)
+  Iniciar(rb1, 1,5)
+  Iniciar(rb2, 11,5)
+fin

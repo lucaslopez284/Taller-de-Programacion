@@ -1,0 +1,95 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso Posicionar (E n: numero)
+  variables
+    c: numero
+  comenzar
+    c:= PosCa 
+    c:= c + n
+    Pos(PosAv, c)
+  fin
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      f:= f + 1
+      tomarFlor
+  fin
+  proceso cuadrado(E n: numero; ES f: numero; ES e: numero)
+  comenzar
+    repetir 4
+      repetir n
+        mover
+        juntarFlores(f)
+        e:= e + 1
+      derecha
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot cliente
+  variables
+    id, f, long, av, ca, e: numero
+  comenzar
+    f:= 0
+    e:= 0
+    RecibirMensaje(id,rs)
+    repetir 2
+      Random(long,1,4)
+      cuadrado(long,f, e)
+      long:= long + 1
+      Posicionar (long)
+    Random(long,1,4)
+    cuadrado(long,f, e)
+    av:= PosAv
+    ca:= PosCa
+    repetir f
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+    EnviarMensaje(id, rs)
+    EnviarMensaje(e, rs)
+  fin
+  robot servidor
+  variables
+    id, ganador, aux, max: numero
+    listo: boolean
+  comenzar
+    Asignar
+    max:= 0
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(aux,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(aux,r2)
+        sino
+          si (id = 3)
+            RecibirMensaje(aux,r3)
+      si (aux > max)
+        max:= aux
+        ganador:= id
+    Informar('El que recorrio mas esquinas fue ' , ganador)
+  fin
+variables
+  r1,r2,r3: cliente
+  rs: servidor
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(rs, ciudad)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 8,1)
+  Iniciar(r3, 15,1)
+  Iniciar(rs, 22,1)
+fin

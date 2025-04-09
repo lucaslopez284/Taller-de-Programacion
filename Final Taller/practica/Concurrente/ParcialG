@@ -1,0 +1,156 @@
+
+programa ejemplo
+procesos
+  proceso asignar 
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+  fin
+  proceso juntarFlores (ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso juntarPapeles (ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso limpiar(ES f: numero; ES p: numero)
+  comenzar
+    juntarFlores(f)
+    juntarPapeles(p)
+  fin
+  proceso limpiar2
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso recorrerAvenida(ES f: numero; ES p: numero)
+  comenzar
+    limpiar(f,p)
+    repetir 99
+      mover
+      limpiar(f,p)
+  fin
+  proceso concurrencia (E f: numero; E p: numero; E av: numero; E ca: numero; E id: numero)
+  variables
+    a, c: numero
+  comenzar
+    EnviarMensaje(id,rc)
+    EnviarMensaje(F,rc)
+    RecibirMensaje(a,rc)
+    RecibirMensaje(c,rc)
+    repetir f
+      BloquearEsquina (a,c)
+      Pos(a,c)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina (a,c)
+    repetir p
+      BloquearEsquina (a,c)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina (a,c)
+  fin
+  proceso coordinacion (ES p: numero)
+  variables
+    id, listo, a, c,p: numero
+    ok: boolean
+  comenzar
+    p:= 0
+    repetir 10
+      RecibirMensaje(id,*)
+      si (id = 1) 
+        RecibirMensaje(ok,r1)
+        si (ok = F)
+          Random (a,40,45)
+          Random(c,40,45)
+          EnviarMensaje(a,r1)
+          EnviarMensaje(c,r1)
+        sino
+          si (p = 0)
+            p:= id
+      sino
+        si (id = 2)
+          RecibirMensaje(ok,r2)
+          si (ok = F)
+            Random (a,40,45)
+            Random(c,40,45)
+            EnviarMensaje(a,r2)
+            EnviarMensaje(c,r2)
+          sino
+            si (p = 0)
+              p:= id
+  fin
+  proceso limpieza(E av: numero ; E ca: numero)
+  variables
+    aux: numero
+  comenzar
+    Pos(40,40)
+    aux:= 40
+    repetir 5
+      repetir 5
+        limpiar2
+        mover
+      limpiar2 
+      aux:= aux + 1
+      Pos(aux,40)
+    repetir 5
+      limpiar2 
+      mover
+    limpiar2
+    Pos(av,ca)
+  fin
+areas
+  cuadrante: AreaC (40,40,45,45)
+  avenidas: AreaPC (4,1,11,100)
+  ac: AreaP (1,1,1,1)
+robots
+  robot recolector
+  variables
+    av,ca,id,f, p: numero
+  comenzar
+    RecibirMensaje(id,rc)
+    av := PosAv
+    repetir 3
+      f:= 0
+      p:= 0
+      recorrerAvenida(f,p)
+      av:= av + 2
+      Pos(av,1)
+      concurrencia(f,p,av,1,id)
+    f:= 0
+    p:= 0
+    recorrerAvenida(f,p)
+    concurrencia(f,p,av,1,id)
+    EnviarMensaje(id,rc)
+    EnviarMensaje(V,rc)
+  fin
+  robot coordinador
+  variables
+    p: numero
+  comenzar
+    asignar
+    coordinacion (p)
+    limpieza(1,1)
+    Informar('El primero que finalizo fue ' , p)
+  fin
+variables
+  r1,r2: recolector
+  rc: coordinador
+comenzar
+  AsignarArea(r1, avenidas)
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, avenidas)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(rc, cuadrante)
+  AsignarArea(rc, ac)
+  Iniciar(r1, 4,1)
+  Iniciar(r2, 5,1)
+  Iniciar(rc, 1,1)
+fin

@@ -1,0 +1,129 @@
+
+programa ejemplo
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso juntarPapeles(ES p: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:= p + 1
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(1,r2)
+    EnviarMensaje(2,r3)
+    EnviarMensaje(2,r4)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot papelero
+  variables
+    pap, pasos, av, ca, id: numero
+  comenzar
+    RecibirMensaje(id, rf)
+    Random(pasos, 4,8)
+    juntarPapeles(pap)
+    repetir pasos
+      mover
+      juntarPapeles(pap)
+    derecha
+    repetir 2
+      repetir pasos
+        mover
+        juntarPapeles(pap)
+    av:= PosAv
+    ca:= PosCa
+    repetir pap
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+    EnviarMensaje(id, rf)
+    EnviarMensaje(V, rf)
+  fin
+  robot florero
+  variables
+    flo, pasos, av, ca, id: numero
+  comenzar
+    RecibirMensaje(id, rf)
+    Random(pasos, 4,8)
+    juntarFlores(flo)
+    repetir pasos
+      mover
+      juntarFlores(flo)
+    izquierda
+    repetir 2
+      repetir pasos
+        mover
+        juntarFlores(flo)
+    av:= PosAv
+    ca:= PosCa
+    repetir flo
+      BloquearEsquina(49,49)
+      Pos(49,49)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(49,49)
+    EnviarMensaje(id, rf)
+    EnviarMensaje(V, rf)
+  fin
+  robot fiscal
+  variables
+    flo, pap, obj, cont1, cont2, equipo, av, ca: numero
+  comenzar
+    Asignar 
+    flo:= 0
+    pap:= 0
+    cont1:= 0
+    cont2:= 0
+    av:= PosAv
+    ca:= PosCa
+    mientras (cont1 < 2) | (cont2 < 2)
+      RecibirMensaje(equipo,*)
+      si (equipo = 1)
+        cont1 := cont1 + 1
+        si (cont1 = 2)
+          Pos(50,50)
+          juntarPapeles(pap)
+          Pos(av,ca)
+      sino 
+        si (equipo = 2)
+          cont2:= cont2 + 1
+          si (cont2 = 2)
+            Pos(49,49)
+            juntarFlores(flo)
+            Pos(av,ca)
+    Informar('Flores juntadas' , flo)
+    Informar('Papeles juntados' , pap)
+    obj:= flo + pap  
+    Informar('Objetos juntados' , obj)
+  fin
+variables
+  rf: fiscal
+  r1, r2: papelero
+  r3, r4: florero
+comenzar
+  AsignarArea(rf, ciudad)
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(r4, ciudad)
+  Iniciar(rf, 1,1)
+  Iniciar(r1, 50,1)
+  Iniciar(r2, 50,20)
+  Iniciar(r3, 49,1)
+  Iniciar(r4, 49,20)
+fin

@@ -1,0 +1,91 @@
+
+programa ejemplo
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarPapeles(ES papeles: numero)
+  variables
+    aux: numero
+  comenzar
+    aux:=0
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:= papeles+1
+      aux:=aux+1
+    repetir aux
+      depositarPapel
+  fin
+  proceso juntarFlores(ES flores: numero)
+  variables
+    aux: numero
+  comenzar
+    aux:= 0
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:= flores+1
+      aux:= aux+1
+    repetir aux
+      depositarFlor
+  fin
+  proceso Escalon(E alto: numero; ES f: numero; ES p: numero)
+  comenzar
+    repetir alto
+      juntarPapeles(p)
+      juntarFlores(f)
+      mover
+    derecha
+    juntarPapeles(p)
+    juntarFlores(f)
+    mover
+    izquierda
+  fin
+areas
+  ciudad: AreaC (2,1,100,100)
+  j: AreaP (1,1,1,1)
+robots
+  robot robot1
+  variables
+    f: numero
+    p: numero
+    alto: numero
+    cant: numero
+  comenzar
+    cant:= 0
+    repetir 4
+      f:= 0
+      p:= 0
+      Random(alto, 1, 10)
+      Escalon (alto, f, p)
+      si (f > p)
+        cant:= cant + 1
+    EnviarMensaje(cant, rj)
+  fin
+  robot jefe
+  variables
+    cant: numero
+    aux: numero
+  comenzar
+    cant:= 0
+    repetir 3
+      RecibirMensaje(aux,*)
+      cant:= aux + cant
+    Informar (cant)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  rj: jefe
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(rj, j)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 7,1)
+  Iniciar(r3, 12,1)
+  Iniciar(rj, 1,1)
+fin

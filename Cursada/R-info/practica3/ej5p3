@@ -1,0 +1,87 @@
+
+programa ejemplo
+procesos
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso Maximo(ES g: numero; ES max: numero; E id: numero; E cant: numero)
+  comenzar
+    si (cant > max)
+      max:= cant
+      g:= id
+  fin
+areas
+  coordi: AreaP (1,1,1,1)
+  es: AreaP(11,11,11,11)
+  a1: AreaP(4,1,4,100)
+  a2: AreaP(6,1,6,100)
+  a3: AreaP(8,1,8,100)
+  a4: AreaP(10,1,10,100)   
+robots
+  robot competidores
+  variables
+    pasos, soy, avAct, caAct: numero
+  comenzar
+    pasos := 0
+    RecibirMensaje(soy,rc)
+    avAct:= PosAv
+    caAct:= PosCa
+    BloquearEsquina(11,11)
+    Pos (11,11)
+    mientras (HayPapelEnLaEsquina) & (PosCa < 100)
+      tomarPapel
+      Pos(avAct,caAct)
+      LiberarEsquina(11,11)
+      pasos:= pasos + 1
+      mover
+      caAct:= PosCa
+      BloquearEsquina(11,11)
+      Pos(11,11)
+    Pos(avAct,caAct)
+    LiberarEsquina(11,11)
+    EnviarMensaje(soy,rc)
+    EnviarMensaje(pasos,rc)
+  fin
+  robot coordinador
+  variables
+    ganador, max, id, cant: numero
+  comenzar
+    Asignar
+    repetir 4
+      RecibirMensaje(id,*)
+      si(id = 1)
+        RecibirMensaje(cant,r1)
+      sino
+        si(id = 2)
+          RecibirMensaje(cant,r2)
+        sino
+          si(id = 3)
+            RecibirMensaje(cant,r3)
+          sino
+            RecibirMensaje(cant,r4)                 
+      Maximo(ganador,max,id,cant)
+    Informar ('el ganador es ' , ganador)  
+  fin
+variables
+  r1,r2,r3,r4: competidores
+  rc: coordinador
+comenzar
+  AsignarArea(rc, coordi)
+  AsignarArea(r1, es)
+  AsignarArea(r2, es)
+  AsignarArea(r3, es)
+  AsignarArea(r4, es)
+  AsignarArea(r1, a1)
+  AsignarArea(r2, a2)
+  AsignarArea(r3, a3)
+  AsignarArea(r4, a4)
+  Iniciar(rc, 1,1)
+  Iniciar(r1, 4,1)
+  Iniciar(r2, 6,1)
+  Iniciar(r3, 8,1)
+  Iniciar(r4, 10,1)
+fin

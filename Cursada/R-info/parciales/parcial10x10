@@ -1,0 +1,134 @@
+
+programa ejemplo
+procesos
+  proceso juntarFlores (ES f: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:= f + 1
+  fin
+  proceso Asignar
+  comenzar
+    EnviarMensaje(1,a1)
+    EnviarMensaje(2,a2)
+    EnviarMensaje(3,b1)
+    EnviarMensaje(4,b2)
+    
+  fin
+  proceso recorrer(E n: numero; ES f: numero)
+  comenzar
+    juntarFlores(f)
+    repetir n
+      mover
+      juntarFlores(f)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robot1
+  variables
+    f, id: numero
+    av, ca: numero
+  comenzar
+    RecibirMensaje(id,rf)
+    f:= 0
+    recorrer(10,f)
+    derecha
+    recorrer(10,f)
+    si (id = 1) 
+      EnviarMensaje(V,a2)
+    sino 
+      si (id = 3)
+        EnviarMensaje(V, b2)
+    av:= PosAv
+    ca:= PosCa
+    repetir f
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(20,20)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(f,rf)
+  fin
+  robot robot2
+  variables
+    f, id: numero
+    av, ca: numero
+    ok: boolean
+  comenzar
+    RecibirMensaje(id,rf)
+    f:= 0
+    si (id = 2)
+      RecibirMensaje(ok,a1)
+    sino
+      si (id = 4)
+        RecibirMensaje(ok,b1)
+    repetir 2
+      derecha
+    recorrer(9,f)
+    derecha
+    recorrer(9,f)
+    av:= PosAv
+    ca:= PosCa
+    repetir f
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(20,20)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(f,rf)
+  fin
+  robot fiscal
+  variables
+    floA ,floB, id, nadie, aux: numero
+  comenzar
+    Asignar
+    nadie:= 0
+    floA:= 0
+    floB:= 0
+    repetir 4
+      RecibirMensaje(id, *)
+      si (id = 1)
+        RecibirMensaje(aux,a1)
+        floA:= floA + aux
+      sino
+        si (id = 2)
+          RecibirMensaje(aux,a2)
+          floA:= floA + aux
+        sino
+          si (id = 3)
+            RecibirMensaje(aux,b1)
+            floB:= floB + aux
+          sino
+            si (id = 4)
+              RecibirMensaje(aux,b2)
+              floB:= floB + aux 
+    Informar('equipo a junto', floA)
+    Informar('equipo b junto', floB)
+    si (floA = floB)
+      Informar('no gano nadie', nadie)
+    sino
+      si (floA > floB)
+        Informar('gano el equipo A que junto', floA)
+      sino
+        si (floA < floB)
+          Informar('gano el equipo B que junto', floB)
+  fin
+variables
+  a1, b1: robot1
+  a2, b2: robot2
+  rf: fiscal
+comenzar
+  AsignarArea(a1, ciudad)
+  AsignarArea(a2, ciudad)
+  AsignarArea(b1, ciudad)
+  AsignarArea(b2, ciudad)
+  AsignarArea(rf, ciudad)
+  Iniciar(a1, 1,1)
+  Iniciar(a2, 11,10)
+  Iniciar(b1, 13,1)
+  Iniciar(b2, 23,10)
+  Iniciar(rf, 30,1)
+fin
