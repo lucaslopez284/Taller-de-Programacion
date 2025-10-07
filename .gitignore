@@ -1,0 +1,6 @@
+# Archivos compilados de Java
+*.class
+
+# Archivos compilados de Pascal/
+*.exe
+*.o
